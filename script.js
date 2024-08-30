@@ -3,6 +3,11 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
     if (url) {
         const status = document.getElementById('status');
         status.innerHTML = 'Fetching data...';
+        
+        // Show DDoS buttons after search
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('stopBtn').style.display = 'inline-block';
+
         const info = await getIpInfo(url);
         status.innerHTML = info;
     } else {
@@ -11,97 +16,58 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
 });
 
 document.getElementById('startBtn').addEventListener('click', () => {
-    // Placeholder for Start DDoS functionality
     const status = document.getElementById('status');
-    status.innerHTML = 'Start DDoS functionality is not implemented.';
+    status.innerHTML = 'Simulating DDoS attack...';
+    // Start the DDoS simulation (this is just a placeholder)
+    ddosInterval = setInterval(() => {
+        fetch(document.getElementById('urlInput').value, { method: 'GET', mode: 'no-cors' })
+            .then(() => console.log('Pinged!'))
+            .catch(() => console.log('Ping failed.'));
+    }, 5000); // Ping every 5 seconds
 });
 
 document.getElementById('stopBtn').addEventListener('click', () => {
-    // Placeholder for Stop DDoS functionality
+    clearInterval(ddosInterval);
     const status = document.getElementById('status');
-    status.innerHTML = 'Stop DDoS functionality is not implemented.';
+    status.innerHTML = 'DDoS simulation stopped.';
 });
+
+let ddosInterval;
 
 async function getIpInfo(url) {
     let result = '';
 
     try {
-        // Ping the Site
-        const pingTime = await pingSite(url);
-        result += `<strong>Ping:</strong> ${pingTime} ms<br><br>`;
+        // Fetch detailed information from 2ip.ru
+        const apiUrl = `https://2ip.ru/api/v1/ipinfo/${url}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
 
-        // IP-API Information
-        const ipApiUrl = `http://ip-api.com/json/${url}`;
-        const ipResponse = await fetch(ipApiUrl);
-        const ipData = await ipResponse.json();
-
-        if (ipData.status === "success") {
+        if (data) {
             result += `
                 <strong>IP Information:</strong><br>
-                IP: ${ipData.query}<br>
-                Country: ${ipData.country}<br>
-                Region: ${ipData.regionName}<br>
-                City: ${ipData.city}<br>
-                ISP: ${ipData.isp}<br>
-                Org: ${ipData.org}<br>
-                AS: ${ipData.as}<br>
-                Lat/Lon: ${ipData.lat}, ${ipData.lon}<br>
-                Zip: ${ipData.zip}<br>
-                Timezone: ${ipData.timezone}<br><br>
+                IP: ${data.ip}<br>
+                Hostname: ${data.hostname || 'N/A'}<br>
+                Country: ${data.country}<br>
+                Region: ${data.region}<br>
+                City: ${data.city}<br>
+                ISP: ${data.isp}<br>
+                Organization: ${data.org || 'N/A'}<br>
+                Latitude/Longitude: ${data.lat}, ${data.lon}<br>
+                Timezone: ${data.timezone}<br>
+                ASN: ${data.as || 'N/A'}<br>
+                Proxy: ${data.proxy ? 'Yes' : 'No'}<br>
+                Connection Type: ${data.connection || 'N/A'}<br>
+                Country Code: ${data.country_code || 'N/A'}<br>
+                Region Code: ${data.region_code || 'N/A'}<br>
+                Zip Code: ${data.zip || 'N/A'}<br>
+                Network Type: ${data.network_type || 'N/A'}<br>
+                ISP Organization: ${data.isp_organization || 'N/A'}<br>
+                Services: ${data.services || 'N/A'}<br>
+                Domains: ${data.domains || 'N/A'}<br><br>
             `;
         } else {
-            result += `Failed to retrieve IP info for ${url}. Reason: ${ipData.message}<br><br>`;
-        }
-
-        // Whois Information
-        const whoisApiUrl = `https://jsonwhoisapi.com/api/v1/whois?identifier=${url}`;
-        const whoisResponse = await fetch(whoisApiUrl, {
-            headers: {
-                "Authorization": "Bearer KdpExzqQSKGQ19uMdmvArA"  // Your actual API key
-            }
-        });
-        const whoisData = await whoisResponse.json();
-
-        result += `<strong>Whois Information:</strong><br>`;
-        if (whoisData.domain_name) {
-            result += `
-                Domain: ${whoisData.domain_name}<br>
-                Registrar: ${whoisData.registrar}<br>
-                Registered On: ${whoisData.created_date}<br>
-                Expires On: ${whoisData.expiry_date}<br>
-                Updated On: ${whoisData.updated_date}<br>
-                Nameservers: ${whoisData.nameservers.join(', ')}<br>
-            `;
-        } else {
-            result += `No Whois information available.<br>`;
-        }
-
-        // DNS Information
-        const dnsApiUrl = `https://api.hackertarget.com/dnslookup/?q=${url}`;
-        const dnsResponse = await fetch(dnsApiUrl);
-        const dnsData = await dnsResponse.text();
-
-        result += `<br><strong>DNS Information:</strong><br><pre>${dnsData}</pre>`;
-
-        // SSL Labs Information
-        const sslApiUrl = `https://api.ssllabs.com/api/v3/analyze?host=${url}`;
-        const sslResponse = await fetch(sslApiUrl);
-        const sslData = await sslResponse.json();
-
-        result += `<br><strong>SSL/TLS Information:</strong><br>`;
-        if (sslData.status === "READY") {
-            const endpoint = sslData.endpoints[0];
-            result += `
-                Grade: ${endpoint.grade}<br>
-                Server: ${endpoint.serverName}<br>
-                IP Address: ${endpoint.ipAddress}<br>
-                TLS Version: ${endpoint.details.protocols[0].version}<br>
-                Issuer: ${endpoint.details.cert.issuerLabel}<br>
-                Expiration Date: ${new Date(endpoint.details.cert.notAfter).toUTCString()}<br>
-                Vulnerabilities: ${endpoint.details.vulnStatus}
-            `;
-        } else {
-            result += `SSL Labs analysis is still running or unavailable.<br>`;
+            result += `Failed to retrieve IP info for ${url}.<br><br>`;
         }
 
     } catch (error) {
