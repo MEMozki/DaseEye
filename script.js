@@ -17,10 +17,10 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
 
 document.getElementById('startBtn').addEventListener('click', () => {
     const status = document.getElementById('status');
-    status.innerHTML = 'Simulating DDoS attack...';
+    status.innerHTML = 'DDoS attack started...';
     // Start the DDoS simulation (this is just a placeholder)
     ddosInterval = setInterval(() => {
-        fetch(document.getElementById('urlInput').value, { method: 'GET', mode: 'no-cors' })
+        fetch(document.getElementById('urlInput').value, { method: 'GET', mode: 'cors' })
             .then(() => console.log('Pinged!'))
             .catch(() => console.log('Ping failed.'));
     }, 5000); // Ping every 5 seconds
@@ -29,7 +29,7 @@ document.getElementById('startBtn').addEventListener('click', () => {
 document.getElementById('stopBtn').addEventListener('click', () => {
     clearInterval(ddosInterval);
     const status = document.getElementById('status');
-    status.innerHTML = 'DDoS simulation stopped.';
+    status.innerHTML = 'DDoS stopped.';
 });
 
 let ddosInterval;
@@ -74,12 +74,23 @@ async function getIpInfo(url) {
 }
 
 async function pingSite(url) {
+    const status = document.getElementById('status');
     const start = performance.now();
+
     try {
-        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors', // Ensure proper mode to handle CORS
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         const end = performance.now();
-        return Math.round(end - start);
+        const ping = Math.round(end - start);
+        return `Ping: ${ping} ms`;
     } catch (error) {
-        return 'Ping failed: ' + error.message;
+        return `Ping failed: ${error.message}`;
     }
 }
