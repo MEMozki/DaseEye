@@ -89,7 +89,7 @@ async function pingSite(url) {
     try {
         const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`, {
             method: 'GET',
-            mode: 'cors', // Ensure proper mode to handle CORS
+            mode: 'cors',
         });
 
         if (!response.ok) {
