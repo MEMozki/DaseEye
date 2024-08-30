@@ -8,7 +8,8 @@ body {
 }
 
 .container {
-    width: 80%;
+    width: 90%;
+    max-width: 800px;
     margin: auto;
     padding: 20px;
     background-color: #2e2e2e;
@@ -17,8 +18,8 @@ body {
 }
 
 .logo {
-    width: 100px;
-    height: auto;
+    max-width: 150px; /* Set a max-width to keep it from getting too large */
+    height: auto; /* Maintain aspect ratio */
     margin-bottom: 20px;
 }
 
@@ -31,7 +32,7 @@ h1 {
 }
 
 #urlInput {
-    width: calc(100% - 120px);
+    width: calc(100% - 130px); /* Adjust for button width */
     padding: 10px;
     border: 1px solid #444;
     border-radius: 5px;
@@ -55,4 +56,13 @@ button:hover {
 
 .ddos-controls {
     margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    #urlInput {
+        width: calc(100% - 110px); /* Adjust for button width on smaller screens */
+    }
+    .logo {
+        max-width: 100px; /* Smaller logo for smaller screens */
+    }
 }
