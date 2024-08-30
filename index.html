@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP and Domain Info</title>
+    <title>BaseEye</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+        <img src="LogoEye.png" alt="Logo" class="logo"> <!-- Replace with your actual logo -->
         <h1>BaseEye</h1>
         <div class="input-group">
             <input type="text" id="urlInput" placeholder="Enter a domain or IP" autofocus>
             <button id="searchBtn">Search</button>
-            <button id="startBtn">Start DDoS</button>
-            <button id="stopBtn">Stop DDoS</button>
+        </div>
+        <div class="ddos-controls">
+            <button id="startBtn" style="display:none;">Start DDoS</button>
+            <button id="stopBtn" style="display:none;">Stop DDoS</button>
         </div>
         <div id="status"></div>
     </div>
