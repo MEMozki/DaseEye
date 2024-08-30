@@ -1,17 +1,25 @@
-document.getElementById('startBtn').addEventListener('click', async () => {
+document.getElementById('searchBtn').addEventListener('click', async () => {
     const url = document.getElementById('urlInput').value;
     if (url) {
         const status = document.getElementById('status');
         status.innerHTML = 'Fetching data...';
         const info = await getIpInfo(url);
         status.innerHTML = info;
+    } else {
+        document.getElementById('status').innerHTML = 'Please enter a valid domain or IP address.';
     }
 });
 
-document.getElementById('stopBtn').addEventListener('click', () => {
-    // Here you can add any logic needed to stop actions initiated by the Start button
+document.getElementById('startBtn').addEventListener('click', () => {
+    // Placeholder for Start DDoS functionality
     const status = document.getElementById('status');
-    status.innerHTML = 'Stopped.';
+    status.innerHTML = 'Start DDoS functionality is not implemented.';
+});
+
+document.getElementById('stopBtn').addEventListener('click', () => {
+    // Placeholder for Stop DDoS functionality
+    const status = document.getElementById('status');
+    status.innerHTML = 'Stop DDoS functionality is not implemented.';
 });
 
 async function getIpInfo(url) {
@@ -49,7 +57,7 @@ async function getIpInfo(url) {
         const whoisApiUrl = `https://jsonwhoisapi.com/api/v1/whois?identifier=${url}`;
         const whoisResponse = await fetch(whoisApiUrl, {
             headers: {
-                "Authorization": "Bearer YOUR_API_KEY"  // Replace with your actual API key
+                "Authorization": "Bearer KdpExzqQSKGQ19uMdmvArA"  // Your actual API key
             }
         });
         const whoisData = await whoisResponse.json();
@@ -94,24 +102,6 @@ async function getIpInfo(url) {
             `;
         } else {
             result += `SSL Labs analysis is still running or unavailable.<br>`;
-        }
-
-        // Web Technologies (Wappalyzer)
-        const wappalyzerApiUrl = `https://api.wappalyzer.com/v2/lookup/?urls=${url}`;
-        const wappalyzerResponse = await fetch(wappalyzerApiUrl, {
-            headers: {
-                "x-api-key": "YOUR_API_KEY"  // Replace with your Wappalyzer API key
-            }
-        });
-        const wappalyzerData = await wappalyzerResponse.json();
-
-        result += `<br><strong>Web Technologies:</strong><br>`;
-        if (wappalyzerData.length > 0) {
-            wappalyzerData[0].technologies.forEach(tech => {
-                result += `${tech.name} (${tech.category})<br>`;
-            });
-        } else {
-            result += `No technologies detected or analysis failed.<br>`;
         }
 
     } catch (error) {
