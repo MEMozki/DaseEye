@@ -38,36 +38,32 @@ async function getIpInfo(url) {
     let result = '';
 
     try {
-        // Fetch detailed information from 2ip.ru
-        const apiUrl = `https://2ip.ru/api/v1/ipinfo/${url}`;
+        // Fetch detailed information from ip-api.com
+        const apiUrl = `http://ip-api.com/json/${url}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        if (data) {
+        if (data.status === "fail") {
+            result += `Failed to retrieve IP info for ${url}. Reason: ${data.message}<br><br>`;
+        } else {
             result += `
                 <strong>IP Information:</strong><br>
-                IP: ${data.ip}<br>
+                IP: ${data.query}<br>
                 Hostname: ${data.hostname || 'N/A'}<br>
                 Country: ${data.country}<br>
-                Region: ${data.region}<br>
+                Region: ${data.regionName}<br>
                 City: ${data.city}<br>
                 ISP: ${data.isp}<br>
                 Organization: ${data.org || 'N/A'}<br>
                 Latitude/Longitude: ${data.lat}, ${data.lon}<br>
                 Timezone: ${data.timezone}<br>
-                ASN: ${data.as || 'N/A'}<br>
+                AS: ${data.as || 'N/A'}<br>
                 Proxy: ${data.proxy ? 'Yes' : 'No'}<br>
-                Connection Type: ${data.connection || 'N/A'}<br>
-                Country Code: ${data.country_code || 'N/A'}<br>
-                Region Code: ${data.region_code || 'N/A'}<br>
-                Zip Code: ${data.zip || 'N/A'}<br>
-                Network Type: ${data.network_type || 'N/A'}<br>
-                ISP Organization: ${data.isp_organization || 'N/A'}<br>
-                Services: ${data.services || 'N/A'}<br>
-                Domains: ${data.domains || 'N/A'}<br><br>
+                Connection Type: ${data.connection_type || 'N/A'}<br>
+                Country Code: ${data.countryCode || 'N/A'}<br>
+                Region Code: ${data.regionCode || 'N/A'}<br>
+                Zip Code: ${data.zip || 'N/A'}<br><br>
             `;
-        } else {
-            result += `Failed to retrieve IP info for ${url}.<br><br>`;
         }
 
     } catch (error) {
