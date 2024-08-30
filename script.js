@@ -3,7 +3,7 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
     if (url) {
         const status = document.getElementById('status');
         status.innerHTML = 'Fetching data...';
-        
+
         // Show DDoS buttons after search
         document.getElementById('startBtn').style.display = 'inline-block';
         document.getElementById('stopBtn').style.display = 'inline-block';
@@ -17,19 +17,22 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
 
 document.getElementById('startBtn').addEventListener('click', () => {
     const status = document.getElementById('status');
-    status.innerHTML = 'DDoS attack started...';
+    status.innerHTML = 'Simulating DDoS attack...';
     // Start the DDoS simulation (this is just a placeholder)
     ddosInterval = setInterval(() => {
-        fetch(document.getElementById('urlInput').value, { method: 'GET', mode: 'cors' })
+        fetch(`https://cors-anywhere.herokuapp.com/http://ip-api.com/json/${encodeURIComponent(document.getElementById('urlInput').value)}`, {
+            method: 'GET',
+            mode: 'cors'
+        })
             .then(() => console.log('Pinged!'))
-            .catch(() => console.log('Ping failed.'));
+            .catch((error) => console.error('Ping failed:', error));
     }, 5000); // Ping every 5 seconds
 });
 
 document.getElementById('stopBtn').addEventListener('click', () => {
     clearInterval(ddosInterval);
     const status = document.getElementById('status');
-    status.innerHTML = 'DDoS stopped.';
+    status.innerHTML = 'DDoS simulation stopped.';
 });
 
 let ddosInterval;
@@ -38,9 +41,15 @@ async function getIpInfo(url) {
     let result = '';
 
     try {
-        // Fetch detailed information from ip-api.com
-        const apiUrl = `http://ip-api.com/json/${url}`;
+        // Fetch detailed information from ip-api.com via CORS proxy
+        const apiUrl = `https://cors-anywhere.herokuapp.com/http://ip-api.com/json/${encodeURIComponent(url)}`;
+        console.log('Fetching from URL:', apiUrl); // Debugging line
         const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         const data = await response.json();
 
         if (data.status === "fail") {
@@ -78,7 +87,7 @@ async function pingSite(url) {
     const start = performance.now();
 
     try {
-        const response = await fetch(url, {
+        const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`, {
             method: 'GET',
             mode: 'cors', // Ensure proper mode to handle CORS
         });
